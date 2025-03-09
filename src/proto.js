@@ -7,6 +7,7 @@ import setupDynamicTextures from './tex_gen/canvas';
 import setupPicking from './picker.js';
 import setupOverlay from './overlay.js';
 import setupCamera from './camera.js';
+import { boundss } from './prefilter.js'
 
 const selected = [0];
 
@@ -127,10 +128,7 @@ function resizeRendererToDisplaySize(renderer) {
   return needResize;
 }
 
-function setSelected(id) {
-  console.log("selected region id - ", id);
-  selected[0] = id / 255;
-}
+
 
 export default function main() {
   // fps stat 
@@ -147,11 +145,20 @@ export default function main() {
   const camera = cameraWrapper.camera;
   const controls = setupControls(camera, canvas);
 
+  const animationHandler = cameraWrapper.animationHandler();
+
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
 
   const pointLight = setupLight();
   scene.add(pointLight);
+
+  function setSelected(id) {
+    console.log("selected region id - ", id);
+    const center = boundss[id].center;
+    animationHandler.addAnimation({ lat: center.lat, lon: center.lon, r: 1.5 }, 2000)
+    selected[0] = (id + 1) / 255;
+  }
 
   const picker = setupPicking(renderer, setSelected);
 
@@ -164,8 +171,8 @@ export default function main() {
 
   const overlay = setupOverlay(camera);
 
-  const animationHandler = cameraWrapper.animationHandler();
-  animationHandler.addAnimation({ lat: 50, lon: 50, r: 2 }, 10000);
+
+  window.THREE = THREE;
 
   // const screenMaterial = new THREE.MeshBasicMaterial({ map: picker.renderTarget.texture });
   // const screenQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), screenMaterial);

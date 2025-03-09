@@ -47,25 +47,24 @@ function threshold(bounds, min) {
   return !((maxX - minX) < min || (maxY - minY) < min);
 }
 
-export default function prefilter() {
-  const regions = [];
-  const boundss = [];
+const regions = [];
+const boundss = [];
 
-  const { features } = geojson;
+const { features } = geojson;
 
-  for (let i = 0; i < features.length; i++) {
-    const polygons = features[i].geometry.coordinates;
-    let bounds;
-    if (polygons.length === 1) {
-      bounds = generatePolyBounds(polygons[0]);
-    } else {
-      bounds = generateRegionBounds(polygons);
-    }
-    if (threshold(bounds, 1)) {
-      regions.push(polygons);
-      boundss.push(bounds);
-    }
+for (let i = 0; i < features.length; i++) {
+  const polygons = features[i].geometry.coordinates;
+  let bounds;
+  if (polygons.length === 1) {
+    bounds = generatePolyBounds(polygons[0]);
+  } else {
+    bounds = generateRegionBounds(polygons);
   }
-
-  return { regions, boundss };
+  if (threshold(bounds, 1)) {
+    regions.push(polygons);
+    boundss.push(bounds);
+    bounds.center = { lon: features[i].properties.LABEL_X, lat: features[i].properties.LABEL_Y };
+  }
 }
+
+export { boundss, regions };

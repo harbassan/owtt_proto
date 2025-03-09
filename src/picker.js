@@ -73,7 +73,7 @@ export default function main(renderer, callback) {
 
     const x = Math.floor((event.clientX / window.innerWidth) * renderTarget.width);
     const y = Math.floor((event.clientY / window.innerHeight) * renderTarget.height);
-    const regionID = getRegionAtPixel(x, y, renderer, renderTarget);
+    const regionID = getRegionAtPixel(x, y, renderer, renderTarget) - 1;
     callback(regionID);
   });
 

@@ -1,5 +1,5 @@
 import { globeToScreen } from '../utils.js';
-import prefilter from '../prefilter';
+import { regions } from '../prefilter.js';
 
 function pathPolygon(ctx, vertices) {
   const { width, height } = ctx.canvas;
@@ -71,7 +71,6 @@ function setupFill(regions) {
 }
 
 export default function setup() {
-  const { regions } = prefilter();
   const outline = setupStroke(regions);
   const lookup = setupFill(regions);
   return { lookup, outline };

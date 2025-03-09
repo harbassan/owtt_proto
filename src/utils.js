@@ -20,7 +20,7 @@ export function globeToWorld(lon, lat, radius) {
 
 export function worldToGlobe(position) {
   const r = position.length();
-  const lon = THREE.MathUtils.radToDeg(Math.atan2(position.x, position.y));
+  const lon = THREE.MathUtils.radToDeg(Math.atan2(position.x, position.z));
   const lat = THREE.MathUtils.radToDeg(Math.asin(position.y / r));
 
   return { lat, lon, r };
