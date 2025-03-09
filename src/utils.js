@@ -18,6 +18,14 @@ export function globeToWorld(lon, lat, radius) {
   return position;
 }
 
+export function worldToGlobe(position) {
+  const r = position.length();
+  const lon = THREE.MathUtils.radToDeg(Math.atan2(position.x, position.y));
+  const lat = THREE.MathUtils.radToDeg(Math.asin(position.y / r));
+
+  return { lat, lon, r };
+}
+
 export function worldToScreen(position, camera, width, height) {
   const ndc = position.clone().project(camera);
   const x = (ndc.x * 0.5 + 0.5) * width;

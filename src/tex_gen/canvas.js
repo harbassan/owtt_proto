@@ -71,7 +71,7 @@ function setupFill(regions) {
 }
 
 export default function setup() {
-  const regions = prefilter();
+  const { regions } = prefilter();
   const outline = setupStroke(regions);
   const lookup = setupFill(regions);
   return { lookup, outline };

@@ -67,5 +67,5 @@ export default function prefilter() {
     }
   }
 
-  return regions;
+  return { regions, boundss };
 }

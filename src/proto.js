@@ -6,23 +6,15 @@ import Stats from "stats.js";
 import setupDynamicTextures from './tex_gen/canvas';
 import setupPicking from './picker.js';
 import setupOverlay from './overlay.js';
+import setupCamera from './camera.js';
 
 const selected = [0];
-
-function setupCamera() {
-  const fov = 75;
-  const aspect = 2;
-  const near = 0.01;
-  const far = 5;
-  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.z = 2;
-  return camera;
-}
 
 function setupControls(camera, canvas) {
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.target.set(0, 0, 0);
+  controls.minDistance = 1.1;
   controls.update();
   return controls;
 }
@@ -151,7 +143,8 @@ export default function main() {
 
   const scene = new THREE.Scene();
 
-  const camera = setupCamera();
+  const cameraWrapper = setupCamera();
+  const camera = cameraWrapper.camera;
   const controls = setupControls(camera, canvas);
 
   const axesHelper = new THREE.AxesHelper(5);
@@ -171,6 +164,9 @@ export default function main() {
 
   const overlay = setupOverlay(camera);
 
+  const animationHandler = cameraWrapper.animationHandler();
+  animationHandler.addAnimation({ lat: 50, lon: 50, r: 2 }, 10000);
+
   // const screenMaterial = new THREE.MeshBasicMaterial({ map: picker.renderTarget.texture });
   // const screenQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), screenMaterial);
   // const screenScene = new THREE.Scene();
@@ -182,8 +178,6 @@ export default function main() {
 
   function render(time) {
     stats.begin();
-
-    time *= 0.001;
 
     if (resizeRendererToDisplaySize(renderer)) {
       camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -199,6 +193,10 @@ export default function main() {
     const direction = camera.position.clone().normalize();
     const offset = new THREE.Vector3(1, 1, 0).applyQuaternion(camera.quaternion);
     pointLight.position.copy(direction.multiplyScalar(1.5)).add(offset);
+
+    if (time > 10000) {
+      animationHandler.executeAnimation(time);
+    }
 
     renderer.render(scene, camera);
     // renderer.render(screenScene, screenCamera);
